@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A World Away: Exoplanet Explorer</title>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background-color: #000;
+    }
+    
+    /* NEW 3D GALAXY BACKGROUND */
+    .galaxy-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+      background-color: #000;
+      perspective: 800px;
+    }
+
+    .starfield-bg {
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        top: -50%;
+        left: -50%;
+        background-image:
+            radial-gradient(1px 1px at 20% 30%, #fff, transparent),
+            radial-gradient(1px 1px at 80% 60%, #fff, transparent),
+            radial-gradient(1px 1px at 50% 90%, #fff, transparent);
+        background-repeat: repeat;
+        background-size: 500px 500px;
+        animation: sparkle-bg 250s linear infinite;
+    }
+
+    @keyframes sparkle-bg {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .galaxy-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100vmax;
+      height: 100vmax;
+      transform-style: preserve-3d;
+      animation: galaxy-spin 250s linear infinite;
+      transform: translate(-50%, -50%);
+    }
+
+    @keyframes galaxy-spin {
+      from { transform: translate(-50%, -50%) rotateZ(0deg); }
+      to { transform: translate(-50%, -50%) rotateZ(360deg); }
+    }
+
+    .galaxy {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      transform: rotateX(70deg);
+      background: radial-gradient(ellipse at center, 
+        rgba(234, 179, 8, 0.4) 0%, 
+        rgba(168, 85, 247, 0.25) 35%, 
+        rgba(59, 130, 246, 0.15) 60%,
+        transparent 70%
+      );
+      box-shadow: 0 0 60px 15px rgba(192, 132, 252, 0.1);
+    }
+
+    .galaxy::before, .galaxy::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        animation: arm-spin 25s linear infinite;
+    }
+
+    .galaxy::before {
+        background: radial-gradient(ellipse at 60% 40%, rgba(147, 197, 253, 0.15) 0%, transparent 40%);
+        animation-duration: 20s;
+    }
+
+    .galaxy::after {
+        background: radial-gradient(ellipse at 40% 60%, rgba(221, 214, 254, 0.15) 0%, transparent 40%);
+        animation-direction: reverse;
+    }
+
+    @keyframes arm-spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+
+    /* --- Component Styles (Unchanged) --- */
+    @keyframes sparkle-glow {
+      0% {
+        box-shadow: 0 0 0px rgba(251, 191, 36, 0), 0 0 0px rgba(251, 191, 36, 0);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(251, 191, 36, 0.8), 0 0 30px rgba(251, 191, 36, 0.6);
+        transform: scale(1.1);
+      }
+      100% {
+        box-shadow: 0 0 0px rgba(251, 191, 36, 0), 0 0 0px rgba(251, 191, 36, 0);
+        transform: scale(1);
+      }
+    }
+    .animate-sparkle-glow {
+      animation: sparkle-glow 1.5s ease-in-out;
+    }
+    .ml-lab-bg {
+      background-color: transparent;
+      background-image:
+          linear-gradient(rgba(124, 58, 237, 0.1) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(124, 58, 237, 0.1) 1px, transparent 1px);
+      background-size: 30px 30px;
+    }
+    .lab-card {
+        background: rgba(12, 10, 22, 0.75);
+        border: 1px solid rgba(109, 40, 217, 0.6);
+        backdrop-filter: blur(8px);
+    }
+    input[type=range].lab-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
+    }
+    input[type=range].lab-slider:focus {
+      outline: none;
+    }
+    input[type=range].lab-slider::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 4px;
+      cursor: pointer;
+      background: rgba(139, 92, 246, 0.5);
+      border-radius: 5px;
+    }
+    input[type=range].lab-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      border: 2px solid #fff;
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background: #8b5cf6;
+      cursor: pointer;
+      margin-top: -6px;
+    }
+    input[type=range].lab-slider::-moz-range-track {
+      width: 100%;
+      height: 4px;
+      cursor: pointer;
+      background: rgba(139, 92, 246, 0.5);
+      border-radius: 5px;
+    }
+    input[type=range].lab-slider::-moz-range-thumb {
+      border: 2px solid #fff;
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background: #8b5cf6;
+      cursor: pointer;
+    }
+
+    /* ExoJourney Enhancements */
+    @keyframes sparkle-effect {
+        0% { text-shadow: 0 0 4px rgba(250, 204, 21, 0); transform: scale(1); }
+        50% { 
+            text-shadow: 0 0 16px rgba(250, 204, 21, 1), 0 0 24px rgba(250, 204, 21, 0.8); 
+            transform: scale(1.1);
+        }
+        100% { text-shadow: 0 0 4px rgba(250, 204, 21, 0); transform: scale(1); }
+    }
+    .correct-answer-sparkle {
+        animation: sparkle-effect 0.7s ease-in-out;
+    }
+    .mission-details {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.5s ease-in-out;
+    }
+    .mission-details > div {
+        overflow: hidden;
+    }
+    .mission-details.expanded {
+        grid-template-rows: 1fr;
+    }
+
+  </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.22.0",
+    "recharts": "https://aistudiocdn.com/recharts@^3.2.1"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <div class="galaxy-background">
+    <div class="starfield-bg"></div>
+    <div class="galaxy-container">
+      <div class="galaxy"></div>
+    </div>
+  </div>
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
